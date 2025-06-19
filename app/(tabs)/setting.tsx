@@ -24,6 +24,7 @@ export default function Settings() {
   const [diary, setDiary] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -31,6 +32,7 @@ export default function Settings() {
       const savedBio = await AsyncStorage.getItem('userBio');
       const savedDiary = await AsyncStorage.getItem('mustWatchList');
       const savedFavorites = await AsyncStorage.getItem('favorites');
+      const userData = await AsyncStorage.getItem('user');
 
       if (savedImage) setImage(savedImage);
       if (savedBio) {
@@ -39,6 +41,7 @@ export default function Settings() {
       }
       if (savedDiary) setDiary(JSON.parse(savedDiary));
       if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
+      if (userData) setUser(JSON.parse(userData));
     })();
   }, []);
 
@@ -63,7 +66,7 @@ export default function Settings() {
   };
 
   const handleLogout = async () => {
-    await AsyncStorage.clear();
+    await AsyncStorage.removeItem('user');
     router.replace('/login');
   };
 
@@ -84,6 +87,15 @@ export default function Settings() {
               <Text style={{ color: '#fff' }}>Pick DP</Text>
             </View>
           )}
+
+          {/* Show name and email below the image */}
+          {user && (
+            <>
+              <Text style={styles.nameText}>{user.name}</Text>
+              <Text style={styles.emailText}>{user.email}</Text>
+            </>
+          )}
+
           <Text style={styles.editLink}>Edit Profile</Text>
         </TouchableOpacity>
 
@@ -105,6 +117,7 @@ export default function Settings() {
         </TouchableOpacity>
       </ScrollView>
 
+      {/* Modal */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -146,28 +159,78 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  header: { fontSize: 28, fontWeight: 'bold', color: 'red', marginBottom: 20 },
-  profileContainer: { alignItems: 'center', marginBottom: 20 },
-  image: { width: 120, height: 120, borderRadius: 60, marginBottom: 6 },
-  imagePlaceholder: { backgroundColor: '#444', justifyContent: 'center', alignItems: 'center' },
-  editLink: { color: 'red', fontWeight: '600' },
-  sectionLabel: { fontSize: 18, color: '#fff', marginTop: 20, marginBottom: 10 },
-  bioText: { color: '#ccc', marginBottom: 10 },
-  itemText: { color: '#ccc', marginBottom: 6 },
-  noData: { color: '#666', fontStyle: 'italic' },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'red',
+    marginBottom: 20,
+  },
+  profileContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  image: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    marginBottom: 8,
+  },
+  imagePlaceholder: {
+    backgroundColor: '#444',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nameText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 4,
+  },
+  emailText: {
+    color: '#ccc',
+    fontSize: 14,
+  },
+  editLink: {
+    color: 'red',
+    fontWeight: '600',
+    marginTop: 6,
+  },
+  sectionLabel: {
+    fontSize: 18,
+    color: '#fff',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  bioText: {
+    color: '#ccc',
+    marginBottom: 10,
+  },
+  itemText: {
+    color: '#ccc',
+    marginBottom: 6,
+  },
+  noData: {
+    color: '#666',
+    fontStyle: 'italic',
+  },
   logoutButton: {
     backgroundColor: 'red',
     padding: 12,
     borderRadius: 8,
     marginTop: 20,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   logoutText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 16,
   },
-  modalContainer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center' },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   modalContent: {
     backgroundColor: '#1c1c1e',
     padding: 20,
@@ -179,8 +242,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 6,
   },
-  modalTitle: { fontSize: 20, color: '#fff', marginBottom: 10 },
-  pickImageText: { color: 'red', marginBottom: 10 },
+  modalTitle: {
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 10,
+  },
+  pickImageText: {
+    color: 'red',
+    marginBottom: 10,
+  },
   input: {
     backgroundColor: '#333',
     color: '#fff',
@@ -189,5 +259,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 10,
   },
-  charCount: { color: '#aaa', fontSize: 12, marginBottom: 10, textAlign: 'right' },
+  charCount: {
+    color: '#aaa',
+    fontSize: 12,
+    marginBottom: 10,
+    textAlign: 'right',
+  },
 });

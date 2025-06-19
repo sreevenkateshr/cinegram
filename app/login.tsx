@@ -5,46 +5,43 @@ import { router } from 'expo-router';
 
 export default function Login() {
   const [email, setEmail] = useState('');
+  const [pass, setPass] = useState('');
 
   const handleLogin = async () => {
-    const stored = await AsyncStorage.getItem('registeredUser');
-    if (!stored) {
-      Alert.alert('Not Registered', 'Please register first.');
-      return;
-    }
+    const storedUsers = await AsyncStorage.getItem('registeredUsers');
+    const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-    const user = JSON.parse(stored);
-    if (user.email !== email.trim()) {
-      Alert.alert('Login Failed', 'Email not found.');
-      return;
-    }
+    const found = users.find((u: any) => u.email === email && u.password === pass);
+    if (!found) return Alert.alert('Invalid credentials');
 
-    await AsyncStorage.setItem('user', JSON.stringify(user));
-    router.replace('../(tabs)/index');
-  };
-
-  const goToRegister = () => {
-    router.push('/register');
+    await AsyncStorage.setItem('user', JSON.stringify({ name: found.name, email: found.email }));
+    router.replace('/(tabs)'); // or /home if using that directly
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login 👋</Text>
-
+      <Text style={styles.title}>Login</Text>
       <TextInput
+        placeholder="Email"
+        placeholderTextColor="#ccc"
         style={styles.input}
-        placeholder="Enter registered email"
-        placeholderTextColor="#aaa"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
+        autoCapitalize="none"
       />
-
+      <TextInput
+        placeholder="Password"
+        placeholderTextColor="#ccc"
+        style={styles.input}
+        value={pass}
+        onChangeText={setPass}
+        secureTextEntry
+      />
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+        <Text style={styles.btnText}>Login</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity onPress={goToRegister}>
+      <TouchableOpacity onPress={() => router.replace('/register')}>
         <Text style={styles.link}>Don't have an account? Register</Text>
       </TouchableOpacity>
     </View>
@@ -52,24 +49,10 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#000' },
-  title: { fontSize: 26, color: 'red', marginBottom: 20, textAlign: 'center' },
-  input: {
-    borderWidth: 1,
-    borderColor: '#444',
-    borderRadius: 8,
-    padding: 12,
-    color: '#fff',
-    backgroundColor: '#111',
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: 'red',
-    padding: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 16 },
-  link: { color: '#ccc', textAlign: 'center', marginTop: 12 },
+  container: { flex: 1, backgroundColor: '#000', padding: 20, justifyContent: 'center' },
+  title: { fontSize: 28, color: '#E50914', marginBottom: 20, textAlign: 'center' },
+  input: { backgroundColor: '#222', color: '#fff', padding: 12, borderRadius: 8, marginBottom: 12 },
+  button: { backgroundColor: '#E50914', padding: 14, borderRadius: 8 },
+  btnText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },
+  link: { color: '#aaa', marginTop: 15, textAlign: 'center' },
 });

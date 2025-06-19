@@ -11,7 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth } from '@/firebase/config'; // ✅ Correct alias or use ../../firebase/config
+import { auth } from '@/firebase/config'; // ✅ Ensure this is correct for your alias setup
 
 const API_KEY = 'f0ceb33fb23f91c1792771627561c329';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
@@ -30,7 +30,7 @@ interface MovieResult {
   poster_path: string;
 }
 
-export default function Reviews() {
+export default function SearchScreen() {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<MovieResult[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -80,7 +80,7 @@ export default function Reviews() {
         <View style={styles.starRow}>
           {Array.from({ length: 5 }, (_, i) => (
             <Ionicons
-              key={i}
+              key={`star-${review.id}-${i}`} // ✅ Unique key to fix warning
               name={i < review.rating ? 'star' : 'star-outline'}
               size={18}
               color="#FFD700"
@@ -114,13 +114,12 @@ export default function Reviews() {
           data={results}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => {
-          const matchedReview = reviews.find(
-            (r) => r.movie.toLowerCase() === item.title.toLowerCase()
-          );
-         if (!matchedReview) return null;
-        return renderReviewCard(matchedReview, item.poster_path);
-        }}
-
+            const matchedReview = reviews.find(
+              (r) => r.movie.toLowerCase() === item.title.toLowerCase()
+            );
+            if (!matchedReview) return null;
+            return renderReviewCard(matchedReview, item.poster_path);
+          }}
           ListEmptyComponent={
             <Text style={{ color: '#aaa', textAlign: 'center', marginTop: 20 }}>
               No reviews for this search

@@ -1,39 +1,36 @@
-import { useEffect, useState } from 'react';
-import { Slot, router, usePathname } from 'expo-router';
+import { Slot, useRouter, usePathname } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 
 export default function RootLayout() {
+  const router = useRouter();
+  const path = usePathname();
   const [loading, setLoading] = useState(true);
-  const pathname = usePathname();
 
   useEffect(() => {
-    const checkAuth = async () => {
+    (async () => {
       const user = await AsyncStorage.getItem('user');
-      const isAuthPage = pathname === '/login' || pathname === '/register';
-
-      if (!user && !isAuthPage) {
+      if (!user && path !== '/login' && path !== '/register') {
         router.replace('/login');
       }
-
-      if (user && isAuthPage) {
-        router.replace('./tabs/index'); // Redirect to home tab
+      if (user && (path === '/login' || path === '/register')) {
+        router.replace('/(tabs)');
       }
-
       setLoading(false);
-    };
-
-    checkAuth();
-  }, [pathname]);
+    })();
+  }, [path]);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="red" />
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#E50914" />
       </View>
     );
   }
-
   return <Slot />;
 }
 
+const styles = StyleSheet.create({
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+});
