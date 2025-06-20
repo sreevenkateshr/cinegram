@@ -34,8 +34,8 @@ export default function Register() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.btnText}>Create Account</Text>
+     <View style={styles.container}>
+      <Text style={styles.title}>Create an Account</Text>
       {[
         { placeholder: 'Name', value: name, setValue: setName },
         { placeholder: 'Email', value: email, setValue: setEmail },
@@ -64,7 +64,7 @@ export default function Register() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000', padding: 20, justifyContent: 'center' },
-  title: { fontSize: 28, color: '#E50914', marginBottom: 20, textAlign: 'center' },
+  title: { fontSize: 28, color: '#E50914', marginBottom: 20, textAlign: 'center', fontWeight:'bold'},
   input: { backgroundColor: '#222', color: '#fff', padding: 12, borderRadius: 8, marginBottom: 12 },
   button: { backgroundColor: '#E50914', padding: 14, borderRadius: 8 },
   btnText: { color: '#fff', textAlign: 'center', fontWeight: 'bold' },

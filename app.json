@@ -1,37 +1,49 @@
 {
   "expo": {
-    "name": "cinegram",
+    "name": "Cinegram",
     "slug": "cinegram",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/cinelogo.png",
     "scheme": "cinegram",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/images/cinelogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sreevenkatesh152001.cinegram"
     },
     "android": {
+      "package": "com.sreevenkatesh152001.cinegram",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/cinelogo.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.sreevenkatesh152001.cinegram"
+      "permissions": [],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": {
+            "scheme": "cinegram"
+          },
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
+      "favicon": "./assets/images/cinelogo.png",
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/cinelogo.png"
+      "output": "static"
     },
-    "plugins": [
-      "expo-router"
-    ],
+    "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
     },
